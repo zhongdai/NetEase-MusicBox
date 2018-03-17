@@ -11,7 +11,7 @@ import threading
 import time
 import os
 import signal
-from ui import Ui
+from .ui import Ui
 
 
 # carousel x in [left, right]

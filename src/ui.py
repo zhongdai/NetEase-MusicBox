@@ -6,7 +6,7 @@
 '''
 
 import curses
-from api import NetEase
+from .api import NetEase
 
 
 class Ui:
@@ -26,26 +26,26 @@ class Ui:
         # refresh top 2 line
         self.screen.move(1,1)
         self.screen.clrtoeol()
-    	self.screen.move(2,1)
-    	self.screen.clrtoeol()
-    	if pause:
-    		self.screen.addstr(1, 6, '_ _ z Z Z', curses.color_pair(3))
-    	else:
-        	self.screen.addstr(1, 6, '♫  ♪ ♫  ♪', curses.color_pair(3))
+        self.screen.move(2,1)
+        self.screen.clrtoeol()
+        if pause:
+            self.screen.addstr(1, 6, '_ _ z Z Z', curses.color_pair(3))
+        else:
+            self.screen.addstr(1, 6, '♫  ♪ ♫  ♪', curses.color_pair(3))
         self.screen.addstr(1, 19, song_name + '   -   ' + artist + '  < ' + album_name + ' >', curses.color_pair(4))
-    	self.screen.refresh() 	
+        self.screen.refresh()     
 
     def build_loading(self):
         self.screen.addstr(6, 19, '享受高品质音乐，loading...', curses.color_pair(1))
         self.screen.refresh()        
 
     def build_menu(self, datatype, title, datalist, offset, index, step):
-    	# keep playing info in line 1
+        # keep playing info in line 1
         self.screen.move(4,1)
         self.screen.clrtobot()
         self.screen.addstr(4, 19, title, curses.color_pair(1))
 
-        if len(datalist) == 0:
+        if not datalist:
             self.screen.addstr(8, 19, '这里什么都没有 -，-')
 
         else:
@@ -105,7 +105,7 @@ class Ui:
         self.screen.refresh()    
 
     def build_search(self, stype):
-    	netease = self.netease
+        netease = self.netease
         if stype == 'songs':
             song_name = self.get_param('搜索歌曲：')
             try:
@@ -160,19 +160,19 @@ class Ui:
     def build_search_menu(self):
         self.screen.move(4,1)
         self.screen.clrtobot()
-    	self.screen.addstr(8, 19, '选择搜索类型:', curses.color_pair(1))
-    	self.screen.addstr(10,19, '[1] 歌曲')
-    	self.screen.addstr(11,19, '[2] 艺术家')
-    	self.screen.addstr(12,19, '[3] 专辑')
-    	self.screen.addstr(13,19, '[4] 网易精选集')
-    	self.screen.addstr(16,19, '请键入对应数字:', curses.color_pair(2))
-    	self.screen.refresh()
-    	x = self.screen.getch()
-    	return x
+        self.screen.addstr(8, 19, '选择搜索类型:', curses.color_pair(1))
+        self.screen.addstr(10,19, '[1] 歌曲')
+        self.screen.addstr(11,19, '[2] 艺术家')
+        self.screen.addstr(12,19, '[3] 专辑')
+        self.screen.addstr(13,19, '[4] 网易精选集')
+        self.screen.addstr(16,19, '请键入对应数字:', curses.color_pair(2))
+        self.screen.refresh()
+        x = self.screen.getch()
+        return x
 
     def build_login(self):
         info = self.get_param('请输入登录信息， e.g: john@163.com 123456')
-        account = info.split(' ')
+        account = info.decode('utf-8').split()
         if len(account) != 2:
             return self.build_login()
         login_info = self.netease.login(account[0], account[1])
@@ -197,7 +197,7 @@ class Ui:
         return x
 
     def get_param(self, prompt_string):
-  		# keep playing info in line 1    	
+          # keep playing info in line 1        
         self.screen.move(4,1)
         self.screen.clrtobot()
         self.screen.addstr(5, 19, prompt_string, curses.color_pair(1))

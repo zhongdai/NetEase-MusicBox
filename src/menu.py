@@ -12,9 +12,9 @@ import os
 import json
 import time
 import webbrowser
-from api import NetEase
-from player import Player
-from ui import Ui
+from .api import NetEase
+from .player import Player
+from .ui import Ui
 
 home = os.path.expanduser("~")
 if os.path.isdir(home + '/netease-musicbox') is False:
@@ -50,8 +50,8 @@ shortcut = [
 
 class Menu:
     def __init__(self):
-        reload(sys)
-        sys.setdefaultencoding('UTF-8')
+#        reload(sys)
+#        sys.setdefaultencoding('UTF-8')
         self.datatype = 'main'
         self.title = '网易云音乐'
         self.datalist = ['排行榜', '艺术家', '新碟上架', '精选歌单', '我的歌单', 'DJ节目', '打碟', '收藏', '搜索', '帮助']
@@ -69,11 +69,10 @@ class Menu:
         self.userid = None
         self.username = None
         try:
-            sfile = file(home + "/netease-musicbox/flavor.json",'r')
-            data = json.loads(sfile.read())
-            self.collection = data['collection']
-            self.account = data['account']
-            sfile.close()
+            with open(os.path.join(home, "netease-musicbox/flavor.json"), "r") as sfile:
+                data = json.loads(sfile.read())
+                self.collection = data['collection']
+                self.account = data['account']
         except:
             self.collection = []        
             self.account = {}
@@ -89,7 +88,8 @@ class Menu:
             idx = index = self.index
             step = self.step
             stack = self.stack
-            djstack = self.djstack
+            # not used variable
+            # djstack = self.djstack
             key = self.screen.getch()
             self.ui.screen.refresh()
 
@@ -231,13 +231,12 @@ class Menu:
 
 
         self.player.stop()
-        sfile = file(home + "/netease-musicbox/flavor.json", 'w')
-        data = {
-            'account': self.account,
-            'collection': self.collection
-        }
-        sfile.write(json.dumps(data))
-        sfile.close()
+        with open(os.path.join(home, "netease-musicbox/flavor.json"), "w") as sfile:
+            data = {
+                'account': self.account,
+                'collection': self.collection
+            }
+            json.dump(data, sfile)
         curses.endwin()
 
     def dispatch_enter(self, idx):
